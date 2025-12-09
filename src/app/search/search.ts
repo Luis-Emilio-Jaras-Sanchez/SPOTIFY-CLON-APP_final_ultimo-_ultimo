@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
-import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, of } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, of, tap } from 'rxjs';
 import { SpotifyApiService } from '../core/services/spotify-api.service';
 import { AudioService } from '../core/services/audio.service';
 import { Track } from '../core/models/track.model';
@@ -119,13 +119,21 @@ export class SearchComponent implements OnInit, OnDestroy {
     private spotify: SpotifyApiService,
     private audio: AudioService,
     private cdr: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
     this.searchSubscription = this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap(query => {
+        if (query && query.trim().length > 1) {
+          this.router.navigate(['/search', query.trim()], { replaceUrl: true });
+        } else {
+          this.router.navigate(['/search'], { replaceUrl: true });
+        }
+      }),
       switchMap(query => {
         if (query && query.trim().length > 1) {
           this.isSearching = true;
@@ -152,6 +160,14 @@ export class SearchComponent implements OnInit, OnDestroy {
         this.isSearching = false;
         this.showResults = false;
         this.cdr.detectChanges();
+      }
+    });
+
+    this.route.params.subscribe(params => {
+      const term = params['term'];
+      if (term && term !== this.searchQuery) {
+        this.searchQuery = term;
+        this.searchSubject.next(term);
       }
     });
   }
