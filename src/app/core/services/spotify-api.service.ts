@@ -43,6 +43,24 @@ export class SpotifyApiService {
     );
   }
 
+  getPlaylist(id: string): Observable<any> {
+    return this.http.get<any>(`${environment.API_URL}/playlists/${id}`).pipe(
+      map(response => {
+        // Transform response to match our Track interface if needed, or return raw playlist
+        // The API returns tracks in 'tracks.items', where each item has a 'track' property
+        if (response && response.tracks && response.tracks.items) {
+          response.tracks = response.tracks.items.map((item: any) => item.track).filter((t: any) => t);
+        }
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Error fetching playlist', error);
+        return of(null);
+      })
+    );
+  }
+
+
   private getMockResults(query: string): Observable<SearchResult> {
     const mockTracks: Track[] = [
       {

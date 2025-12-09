@@ -1,9 +1,9 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subject, Subscription, debounceTime, distinctUntilChanged, switchMap, of, tap } from 'rxjs';
-import { SpotifyApiService } from '../core/services/spotify-api.service';
-import { AudioService } from '../core/services/audio.service';
-import { Track } from '../core/models/track.model';
+import { SpotifyRepository } from '../domain/ports/out/spotify.repository';
+import { AudioRepository } from '../domain/ports/out/audio.repository';
+import { Track } from '../domain/models/track.model';
 
 @Component({
   selector: 'app-search',
@@ -116,8 +116,8 @@ export class SearchComponent implements OnInit, OnDestroy {
   private searchSubscription!: Subscription;
 
   constructor(
-    private spotify: SpotifyApiService,
-    private audio: AudioService,
+    private spotify: SpotifyRepository,
+    private audio: AudioRepository,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private route: ActivatedRoute
@@ -165,9 +165,14 @@ export class SearchComponent implements OnInit, OnDestroy {
 
     this.route.params.subscribe(params => {
       const term = params['term'];
-      if (term && term !== this.searchQuery) {
-        this.searchQuery = term;
-        this.searchSubject.next(term);
+      if (term) {
+        if (term !== this.searchQuery) {
+          this.searchQuery = term;
+          this.searchSubject.next(term);
+        }
+      } else {
+        // If no term, clear search
+        this.clearSearch();
       }
     });
   }
@@ -212,7 +217,7 @@ export class SearchComponent implements OnInit, OnDestroy {
   }
 
   get isPlaying(): boolean {
-    return this.audio.isPlaying$.value;
+    return this.audio.isPlaying(); // Changed from property access to method call if needed, or check interface
   }
 
   get playlistInfo(): { current: number; total: number } {

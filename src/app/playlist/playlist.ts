@@ -1,8 +1,8 @@
 import { Component, input } from '@angular/core';
-import { Song } from '../interfaces/song';
-import { Track } from '../interfaces/track';
-import { Image } from '../interfaces/image';
-import { AudioPlayerService } from '../services/audio/audio-player.service';
+
+import { Track } from '../domain/models/track.model';
+import { Image } from '../domain/models/track.model'; // Assuming Image is exported from there or similar
+import { AudioRepository } from '../domain/ports/out/audio.repository';
 
 @Component({
   selector: 'app-playlist',
@@ -15,7 +15,7 @@ export class Playlist {
   playlist = input.required<Track[] | undefined>();
   cover = input.required<Image | undefined>();
 
-  constructor(private _audioPlayer: AudioPlayerService) {}
+  constructor(private _audioPlayer: AudioRepository) { }
 
   playTrack(track: Track): void {
     const currentPlaylist = this.playlist();

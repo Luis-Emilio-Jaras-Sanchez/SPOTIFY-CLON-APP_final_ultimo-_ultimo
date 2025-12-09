@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SpotifyLoginService } from './services/spotify-api/spotify-login-service';
 import { CookiesStorageService } from './services/general/cookies-storage-service';
 
@@ -19,7 +19,7 @@ export class App implements OnInit {
     this._cookieStorage.deleteKeyValue('access_token');
     this._spotifyLogin.getAccessToken().subscribe({
       next: (response) => {
-        console.log('🔑 Token recibido de Spotify:', response.access_token);
+        console.log('Token recibido de Spotify');
         this._cookieStorage.setKey('access_token', response.access_token, new Date(new Date().getTime() + 3600 * 1000));
       },
       error: () => {

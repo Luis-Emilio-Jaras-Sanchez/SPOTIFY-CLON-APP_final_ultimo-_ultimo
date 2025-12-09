@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AudioPlayerService } from '../services/audio/audio-player.service';
-import { Track } from '../interfaces/track';
+import { AudioRepository } from '../domain/ports/out/audio.repository';
+import { Track } from '../domain/models/track.model';
 
 @Component({
   selector: 'app-audio-controller',
@@ -15,10 +15,10 @@ export class AudioController implements OnInit, OnDestroy {
   currentTime = 0;
   duration = 0;
   volume = 0.7;
-  
+
   private subscriptions: Subscription[] = [];
 
-  constructor(private audioPlayerService: AudioPlayerService) {}
+  constructor(private audioPlayerService: AudioRepository) { }
 
   ngOnInit(): void {
     this.subscriptions.push(

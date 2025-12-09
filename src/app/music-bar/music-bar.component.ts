@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AudioService } from '../core/services/audio.service';
-import { Track } from '../core/models/track.model';
+import { AudioRepository } from '../domain/ports/out/audio.repository';
+import { Track } from '../domain/models/track.model';
 
 @Component({
   selector: 'app-music-bar',
@@ -262,7 +262,7 @@ export class MusicBarComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private audioService: AudioService) {}
+  constructor(private audioService: AudioRepository) { }
 
   ngOnInit(): void {
     // Suscribirse a los cambios del reproductor
@@ -270,19 +270,19 @@ export class MusicBarComponent implements OnInit, OnDestroy {
       this.audioService.currentTrack$.subscribe(track => {
         this.currentTrack = track;
       }),
-      
+
       this.audioService.isPlaying$.subscribe(playing => {
         this.isPlaying = playing;
       }),
-      
+
       this.audioService.currentTime$.subscribe(time => {
         this.currentTime = time || 0;
       }),
-      
+
       this.audioService.duration$.subscribe(duration => {
         this.duration = duration || 0;
       }),
-      
+
       this.audioService.volume$.subscribe(vol => {
         this.volume = vol || 0.8;
       })
@@ -310,7 +310,7 @@ export class MusicBarComponent implements OnInit, OnDestroy {
     const rect = progressBar.getBoundingClientRect();
     const percent = (event.clientX - rect.left) / rect.width;
     const seekTime = percent * this.duration;
-    this.audioService.seek(seekTime);
+    this.audioService.seekTo(seekTime);
   }
 
   setVolume(event: any): void {

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { SpotifyAlbumService } from '../services/spotify-api/spotify-album-service';
-import { Album } from '../interfaces/album';
+import { SpotifyRepository } from '../domain/ports/out/spotify.repository';
+import { Album } from '../domain/models/track.model';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -15,7 +15,7 @@ export class Player implements OnInit {
   album$!: Observable<Album>
 
   constructor(
-    private _spotifyAlbum: SpotifyAlbumService,
+    private _spotifyRepository: SpotifyRepository,
     private route: ActivatedRoute
   ) {
   }
@@ -23,8 +23,8 @@ export class Player implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       const albumId = params['id'] || '4aawyAB9vmqN3uQ7FjRGTy'; // Default ID if none provided
-      console.log('🎵 ID de Álbum cargado:', albumId);
-      this.album$ = this._spotifyAlbum.getAlbum(albumId);
+      // console.log('ID de Álbum cargado:', albumId);
+      this.album$ = this._spotifyRepository.getAlbum(albumId);
     });
   }
 
