@@ -7,13 +7,13 @@ export class AudioService {
   private audio = new Audio();
   private playlist: Track[] = [];
   private currentIndex = 0;
-  
+
   public currentTrack$ = new BehaviorSubject<Track | null>(null);
   public isPlaying$ = new BehaviorSubject<boolean>(false);
   public currentTime$ = new BehaviorSubject<number>(0);
   public duration$ = new BehaviorSubject<number>(0);
   public volume$ = new BehaviorSubject<number>(0.8);
-  
+
   get currentTrack() { return this.currentTrack$.asObservable(); }
   get isPlaying() { return this.isPlaying$.asObservable(); }
   get currentTime() { return this.currentTime$.asObservable(); }
@@ -23,17 +23,16 @@ export class AudioService {
   constructor() {
     this.audio.crossOrigin = 'anonymous';
     this.audio.volume = 0.8;
-    
+
     this.audio.addEventListener('ended', () => this.next());
     this.audio.addEventListener('play', () => this.isPlaying$.next(true));
     this.audio.addEventListener('pause', () => this.isPlaying$.next(false));
     this.audio.addEventListener('timeupdate', () => this.currentTime$.next(this.audio.currentTime));
     this.audio.addEventListener('durationchange', () => this.duration$.next(this.audio.duration));
     this.audio.addEventListener('volumechange', () => this.volume$.next(this.audio.volume));
-    
+
     this.audio.addEventListener('error', (e) => {
       console.warn('No se pudo cargar el audio:', e);
-      this.generateTone();
     });
   }
 
@@ -45,10 +44,10 @@ export class AudioService {
   playTrack(track: Track): void {
     const index = this.playlist.findIndex(t => t.id === track.id);
     if (index !== -1) this.currentIndex = index;
-    
+
     this.currentTrack$.next(track);
     console.log('Reproduciendo:', track.name);
-    
+
     if (track.preview_url) {
       this.audio.pause();
       this.audio.currentTime = 0;
@@ -56,7 +55,7 @@ export class AudioService {
       this.audio.load();
       this.audio.crossOrigin = 'anonymous';
       this.audio.preload = 'auto';
-      
+
       this.audio.play()
         .then(() => this.isPlaying$.next(true))
         .catch(() => {
@@ -64,37 +63,15 @@ export class AudioService {
             this.audio.src = track.preview_url!;
             this.audio.play();
           } catch {
-            this.generateTone();
+
           }
         });
     } else {
-      this.generateTone();
+
     }
   }
 
-  private generateTone(): void {
-    try {
-      const context = new AudioContext();
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      
-      oscillator.type = 'sine';
-      oscillator.frequency.value = 440;
-      gain.gain.setValueAtTime(0, context.currentTime);
-      gain.gain.linearRampToValueAtTime(0.1, context.currentTime + 0.1);
-      gain.gain.linearRampToValueAtTime(0, context.currentTime + 1.5);
-      
-      oscillator.connect(gain);
-      gain.connect(context.destination);
-      oscillator.start();
-      oscillator.stop(context.currentTime + 1.5);
-      
-      this.isPlaying$.next(true);
-      setTimeout(() => this.isPlaying$.next(false), 1500);
-    } catch {
-      this.isPlaying$.next(false);
-    }
-  }
+
 
   play(): void {
     if (this.audio.src) {

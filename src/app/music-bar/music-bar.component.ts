@@ -20,7 +20,6 @@ import { Track } from '../core/models/track.model';
         </div>
       </div>
 
-      <!-- Controles de reproducción -->
       <div class="playback-controls">
         <div class="control-buttons">
           <button class="control-btn" (click)="previousTrack()">

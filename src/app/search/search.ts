@@ -53,7 +53,7 @@ import { Track } from '../core/models/track.model';
     .download-track-btn:hover { background: #1ed760; }
     .preview-badge { background: #1db954; color: white; padding: 2px 6px; border-radius: 10px; font-size: 10px; margin-left: 8px; }
 
-    /* Vista por defecto mejorada */
+
     .default-view { padding: 20px; }
     .default-player { border-radius: 20px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
     .default-background { background: linear-gradient(145deg, #1a237e 0%, #3949ab 30%, #5c6bc0 70%, #42a5f5 100%); position: relative; min-height: 450px; }
@@ -69,7 +69,7 @@ import { Track } from '../core/models/track.model';
     .default-controls .control-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.05); }
     .default-controls .play-btn:hover { background: white; transform: scale(1.1); }
     
-    /* Estilos para mensajes */
+
     .preview-badge { font-size: 12px; color: #1db954; margin-left: 8px; }
     .no-results-message { padding: 40px; text-align: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin: 20px; }
     .message-content h3 { color: white; margin-bottom: 16px; font-size: 24px; }
@@ -81,7 +81,7 @@ import { Track } from '../core/models/track.model';
     .track-details { cursor: pointer; flex: 1; }
     .track-duration { color: #b3b3b3; font-size: 14px; }
 
-    /* Estilos para álbumes */
+
     .albums-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 20px; }
     .album-card { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; cursor: pointer; transition: all 0.3s ease; }
     .album-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-5px); }
@@ -90,7 +90,7 @@ import { Track } from '../core/models/track.model';
     .album-info h3 { color: white; font-size: 16px; font-weight: 600; margin-bottom: 4px; }
     .album-info p { color: #b3b3b3; font-size: 14px; }
 
-    /* Estilos para artistas */
+
     .artists-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-top: 20px; }
     .artist-card { background: rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
     .artist-card:hover { background: rgba(255,255,255,0.15); transform: translateY(-5px); }
@@ -129,7 +129,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       switchMap(query => {
         if (query && query.trim().length > 1) {
           this.isSearching = true;
-          console.log('Buscando:', query);
           return this.spotify.searchAll(query.trim());
         } else {
           this.isSearching = false;
@@ -139,7 +138,6 @@ export class SearchComponent implements OnInit, OnDestroy {
       })
     ).subscribe({
       next: (results) => {
-        console.log('Resultados recibidos en componente:', results);
         this.searchResults = results;
         if (results.tracks?.length > 0 || results.albums?.length > 0 || results.artists?.length > 0) {
           this.audio.setPlaylist(results.tracks);
@@ -148,7 +146,7 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.showResults = false;
         }
         this.isSearching = false;
-        this.cdr.detectChanges(); // Force update
+        this.cdr.detectChanges();
       },
       error: () => {
         this.isSearching = false;

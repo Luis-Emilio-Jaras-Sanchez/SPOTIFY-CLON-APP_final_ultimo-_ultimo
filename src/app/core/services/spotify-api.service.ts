@@ -24,12 +24,9 @@ export class SpotifyApiService {
       }
     }).pipe(
       map(response => {
-        console.log('Respuesta cruda de Spotify:', response);
         const tracks = response.tracks?.items || [];
         const albums = response.albums?.items || [];
         const artists = response.artists?.items || [];
-
-        console.log('Tracks encontrados:', tracks.length);
 
         const tracksWithPreview = tracks.filter((t: any) => t.preview_url);
         const tracksWithoutPreview = tracks.filter((t: any) => !t.preview_url);
@@ -41,8 +38,6 @@ export class SpotifyApiService {
         };
       }),
       catchError((error) => {
-        console.error('Error searching Spotify:', error);
-        console.error('Detalles del error:', error.error);
         return this.getMockResults(query);
       })
     );
