@@ -265,7 +265,6 @@ export class MusicBarComponent implements OnInit, OnDestroy {
   constructor(private audioService: AudioRepository) { }
 
   ngOnInit(): void {
-    // Suscribirse a los cambios del reproductor
     this.subscriptions.push(
       this.audioService.currentTrack$.subscribe(track => {
         this.currentTrack = track;

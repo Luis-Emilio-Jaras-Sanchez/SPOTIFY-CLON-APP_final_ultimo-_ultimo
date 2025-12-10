@@ -22,8 +22,7 @@ export class Player implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const albumId = params['id'] || '4aawyAB9vmqN3uQ7FjRGTy'; // Default ID if none provided
-      // console.log('ID de Álbum cargado:', albumId);
+      const albumId = params['id'] || '4aawyAB9vmqN3uQ7FjRGTy';
       this.album$ = this._spotifyRepository.getAlbum(albumId);
     });
   }

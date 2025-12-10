@@ -71,13 +71,11 @@ export class SpotifyApiService implements SpotifyRepository {
                     name: track.name,
                     duration_ms: track.duration_ms,
                     artists: track.artists.map((artist: any) => ({ id: artist.id, name: artist.name })),
-                    album: { id: apiresponse.id, name: apiresponse.name, images: apiresponse.images } // circular ref for context
+                    album: { id: apiresponse.id, name: apiresponse.name, images: apiresponse.images }
                 }))
             })),
             catchError((error) => {
                 console.error('Error obteniendo álbum', error);
-                // Return null or empty object if needed, but signature says Album. 
-                // For now, let's propagate error or return null as casting
                 return of(null as any);
             })
         );

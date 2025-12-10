@@ -171,8 +171,21 @@ export class SearchComponent implements OnInit, OnDestroy {
           this.searchSubject.next(term);
         }
       } else {
-        // If no term, clear search
         this.clearSearch();
+        this.loadDefaultMusic();
+      }
+    });
+
+    if (!this.route.snapshot.params['term'] && !this.searchQuery) {
+      this.loadDefaultMusic();
+    }
+  }
+
+  private loadDefaultMusic(): void {
+    this.spotify.searchAll('Bad Bunny').subscribe(results => {
+      if (results.tracks && results.tracks.length > 0) {
+        this.audio.setPlaylist(results.tracks);
+        this.audio.playTrack(results.tracks[0]);
       }
     });
   }

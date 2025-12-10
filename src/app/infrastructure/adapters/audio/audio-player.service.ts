@@ -57,7 +57,6 @@ export class AudioPlayerService implements AudioRepository {
             });
         } else {
             console.warn('No hay URL de vista previa para la pista:', track.name);
-            // No do not play anything if no preview
         }
     }
 
